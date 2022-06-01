@@ -103,37 +103,37 @@ constantDeclarationStatement    :   CONST variableDeclarationStatement {;}
 
 assignStatement                 :   ID '=' intMathExpression {checkAssignmentCompatibility($1, typeIdentifier);
                                                               if(checkVariableType($3) == -1) //constant value
-                                                              allocateINTValueToRegisterWithID($1, $3);
-                                                              else //variable value
                                                               {
-                                                                if(checkVariableType($3) == 0) //integer
-                                                                allocateINTValueToRegisterWithID($1, getINTVariableValue($3));
-                                                                else if(checkVariableType($3) == 1) //float
-                                                                allocateINTValueToRegisterWithID($1,getFLOATVariableValue($3));
-                                                                else if(checkVariableType($3) == 2) //char
-                                                                allocateCHARValueToRegisterWithID($1, getCHARVariableValue($3));
-                                                                else if(checkVariableType($3) == 3) //string
-                                                                allocateSTRINGValueToRegisterWithID($1, getSTRINGVariableValue($3));
-                                                                else //boolean
-                                                                allocateBOOLValueToRegisterWithID($1, $3);
+                                                                appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
+                                                                allocateINTValueToRegisterWithID($1, $3);
+                                                              }
+                                                              else if(checkVariableType($3) == 0)//variable value
+                                                              {
+                                                                appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
+                                                                allocateINTValueToRegisterWithID($1, getINTVariableValue($3)); 
+                                                              }
+                                                              else
+                                                              {
+                                                                printf("Type mismatch\n");
+                                                                exit(1);
                                                               }
                                                             }
                                 |   ID '=' floatMathExpression {checkAssignmentCompatibility($1, typeIdentifier);
-                                                              if(checkVariableType($3) == -1) //constant value
-                                                              allocateFLOATValueToRegisterWithID($1, $3);
-                                                              else //variable value
-                                                              {
-                                                                if(checkVariableType($3) == 0) //integer
-                                                                allocateFLOATValueToRegisterWithID($1, getINTVariableValue($3));
-                                                                else if(checkVariableType($3) == 1) //float
-                                                                allocateFLOATValueToRegisterWithID($1,getFLOATVariableValue($3));
-                                                                else if(checkVariableType($3) == 2) //char
-                                                                allocateCHARValueToRegisterWithID($1, getCHARVariableValue($3));
-                                                                else if(checkVariableType($3) == 3) //string
-                                                                allocateSTRINGValueToRegisterWithID($1, getSTRINGVariableValue($3));
-                                                                else //boolean
-                                                                allocateBOOLValueToRegisterWithID($1, $3);
-                                                              }
+                                                               if(checkVariableType($3) == -1) //constant value
+                                                                {
+                                                                  appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
+                                                                  allocateINTValueToRegisterWithID($1, $3);
+                                                                }
+                                                                else if(checkVariableType($3) == 1)//variable value
+                                                                {
+                                                                  appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
+                                                                  allocateINTValueToRegisterWithID($1, getINTVariableValue($3)); 
+                                                                }
+                                                                else
+                                                                {
+                                                                  printf("Type mismatch\n");
+                                                                  exit(1);
+                                                                } 
                                                             }
                                 |   ID '=' CHAR_VALUE {checkAssignmentCompatibility($1, 2); allocateCHARValueToRegisterWithID($1, getCHARVariableValue($1));}
                                 |   ID '=' STRING_VALUE {checkAssignmentCompatibility($1, 3); allocateSTRINGValueToRegisterWithID($1, getSTRINGVariableValue($1));}

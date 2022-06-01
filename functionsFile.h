@@ -35,6 +35,20 @@ int checkVariableExistence(int id)
     return 0;
 }
 
+// Function to check variable type
+int checkVariableType(int id)
+{
+    int i;
+    for (i = 0; i < variableCounter; i++)
+    {
+        if (variables[i].identifier == id)
+        {
+            return variables[i].type;
+        }
+    }
+    return -1;
+}
+
 // Function to print variables
 void printVariables()
 {
@@ -47,7 +61,7 @@ void printVariables()
     printf("Finished Printing\n\n");
 }
 
-// Function to append variable to array
+// Function to append variable to variables Container
 void appendVariable(int id, int type, int intValue, float floatValue, char charValue, char* stringValue, int boolValue)
 {
     if (checkVariableExistence(id) == 0)
@@ -63,27 +77,31 @@ void appendVariable(int id, int type, int intValue, float floatValue, char charV
         variableCounter++;
     }
 
-    else // if variable is already declared
+    else if(checkVariableExistence(id) == 1) // Re declaring variable
     {
-        printf("Variable already declared\n");
+        int i;
+        for (i = 0; i < variableCounter; i++)
+        {
+            if (variables[i].identifier == id)
+            {
+                variables[i].type = type;
+                variables[i].intValue = intValue;
+                variables[i].floatValue = floatValue;
+                variables[i].charValue = charValue;
+                variables[i].stringValue = stringValue;
+                variables[i].boolValue = boolValue;
+            }
+        }
+    }
+
+    else
+    {
+        printf("Error: Variable already declared\n");
         exit(1);
     }
 }
 
 
-// Function to check variable type
-int checkVariableType(int id)
-{
-    int i;
-    for (i = 0; i < variableCounter; i++)
-    {
-        if (variables[i].identifier == id)
-        {
-            return variables[i].type;
-        }
-    }
-    return -1;
-}
 
 // Function that checks assignment compatibility
 int checkAssignmentCompatibility(int id, int mathElementType)
@@ -101,7 +119,7 @@ int checkAssignmentCompatibility(int id, int mathElementType)
 
     else if (varType == mathElementType)
     {
-        printf("Variable type and math element type are compatible\n");
+        printf("Compatabile assignment\n");
         return 1;
     }
 
@@ -260,6 +278,7 @@ void addINTTwoRegisters(int a, int b)
         printf("Invalid Addition\n");
         exit(1);
     }
+    printf("adding %d and %d\n", a, b);
     registerNumber++;
     printf("MOV R%d, %d\n MOV R%d, %d\n ADD R%d, R%d, R%d\n R%d = %d\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a + b);
     // R10,R11 are used for Arithmetic operations
