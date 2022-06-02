@@ -7,6 +7,7 @@ int bracketCounter = 0;  // counts the number of brackets
 int typeIdentifier = 0;  // 0 = int, 1 = float, 2 = char, 3 = string
 int registerNumber = 0;  // counts the number of registers
 int labelNumber = 0;     // counts the number of labels
+int firstIfLabel = -1;    // Labels the first if statement
 
 struct variableContainer
 {
@@ -77,7 +78,7 @@ void appendVariable(int id, int type, int intValue, float floatValue, char charV
         variableCounter++;
     }
 
-    else if(checkVariableExistence(id) == 1) // Re declaring variable
+    else if(checkVariableExistence(id) == 1 && (intValue != -1 || floatValue != -1.0 || charValue != '\0' || stringValue != NULL || boolValue != -1 ) )// Re declaring variable
     {
         int i;
         for (i = 0; i < variableCounter; i++)
@@ -134,45 +135,36 @@ int checkAssignmentCompatibility(int id, int mathElementType)
 int getINTVariableValue(int id)
 {
     int i;
-    int gotAnID = -1;
-
+    printf("ID = %d\n", id);
     for (i = 0; i < variableCounter; i++) //
     {
-        if (variables[i].identifier == id)
+        if (variables[i].identifier == id && variables[i].type == 0)
         {
-            gotAnID = 1;
-            printf("Returning Variable Value: %d\n", variables[i].intValue);
+            printf("Returning INT Variable Value: %d\n", variables[i].intValue);
             return variables[i].intValue;
         }
     }
 
-    if(gotAnID == -1)
-    {
-        printf("Returning INT CONSTANT Value: %d\n", id);
-        return id;
-    }
+    printf("Returning INT CONSTANT Value: %d\n", id);
+    return id;
 }
 
 float getFLOATVariableValue(int id)
 {
     int i;
-    int gotAnID = -1;
     
     for (i = 0; i < variableCounter; i++)
     {
-        if (variables[i].identifier == id)
+        if (variables[i].identifier == id && variables[i].type == 1)
         {
-            gotAnID = 1;
-            printf("Returning Variable Value: %d\n", variables[i].intValue);
+            printf("Returning Float Variable Value: %d\n", variables[i].intValue);
             return variables[i].floatValue;
         }
     }
 
-    if(gotAnID == -1)
-    {
-        printf("Returning FLOAT CONSTANT Value: %d\n", id);
-        return (float)id;
-    }
+
+    printf("Returning Float CONSTANT Value: %d\n", id);
+    return (float)id;
 }
 
 char getCHARVariableValue(int id)
@@ -180,8 +172,9 @@ char getCHARVariableValue(int id)
     int i;
     for (i = 0; i < variableCounter; i++)
     {
-        if (variables[i].identifier == id)
+        if (variables[i].identifier == id && variables[i].type == 2)
         {
+            printf("Returning Char Variable Value: %d\n", variables[i].charValue);
             return variables[i].charValue;
         }
     }
@@ -193,8 +186,9 @@ char* getSTRINGVariableValue(int id)
     int i;
     for (i = 0; i < variableCounter; i++)
     {
-        if (variables[i].identifier == id)
+        if (variables[i].identifier == id && variables[i].type == 3)
         {
+            printf("Returning String Variable Value: %s\n", variables[i].stringValue);
             return variables[i].stringValue;
         }
     }
@@ -206,8 +200,9 @@ int getBOOLVariableValue(int id)
     int i;
     for (i = 0; i < variableCounter; i++)
     {
-        if (variables[i].identifier == id)
+        if (variables[i].identifier == id && variables[i].type == 4)
         {
+            printf("Returning Bool Variable Value: %d\n", variables[i].boolValue);
             return variables[i].boolValue;
         }
     }
@@ -377,7 +372,16 @@ void allocateLabel()
 void ifStatementBegin()
 {
     allocateLabel();
-    printf("JMP L%d\n", labelNumber);
+    if (firstIfLabel == -1)
+    {
+        printf("JMP L%d\n", labelNumber);
+        firstIfLabel = labelNumber;
+    }
+
+    else
+    {
+        printf("JMP L%d\n", labelNumber);
+    }
 }
 
 void ifStatementEnd()
@@ -386,10 +390,27 @@ void ifStatementEnd()
     labelNumber++;
 }
 
-void ifStatementElse()
+void ifStatementElseBegin()
 {
-    printf("JMP END%d\n", labelNumber);
-    printf("LABEL L%d\n", labelNumber);
+    if (firstIfLabel == -1)
+    {
+        printf("No if condition exists\n");
+        exit(1);
+    }
+
+    else
+    {
+
+        printf("JMP END%d\n", firstIfLabel);
+        printf("LABEL L%d\n", labelNumber);
+    }
+}
+
+void ifStatementElseEnd()
+{
+    printf("END L%d\n", labelNumber);
+    labelNumber++;
+    firstIfLabel = -1;
 }
 
 void loopInitial()

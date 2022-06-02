@@ -121,13 +121,14 @@ assignStatement                 :   ID '=' intMathExpression {checkAssignmentCom
                                 |   ID '=' floatMathExpression {checkAssignmentCompatibility($1, typeIdentifier);
                                                                if(checkVariableType($3) == -1) //constant value
                                                                 {
-                                                                  appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
-                                                                  allocateINTValueToRegisterWithID($1, $3);
+                                                                  appendVariable($1, 0, -1, $3, '\0', NULL, -1);
+                                                                  allocateFLOATValueToRegisterWithID($1, $3);
                                                                 }
                                                                 else if(checkVariableType($3) == 1)//variable value
                                                                 {
-                                                                  appendVariable($1, 0, $3, -1.0, '\0', NULL, -1);
-                                                                  allocateINTValueToRegisterWithID($1, getINTVariableValue($3)); 
+                                                                  printf("Type match\n");
+                                                                  appendVariable($1, 0, -1, $3, '\0', NULL, -1);
+                                                                  allocateFLOATValueToRegisterWithID($1, getFLOATVariableValue($3)); 
                                                                 }
                                                                 else
                                                                 {
@@ -192,7 +193,7 @@ functionCloseBrace              :   '}' {bracketCounter--; printf("closed parent
 
 ifStatement                     :   IF {ifStatementBegin();} '(' condition ')' ifOpenBrace statement ifCloseBrace {ifStatementEnd();}
                                 |   ELSE IF {ifStatementBegin();}'(' condition ')' ifOpenBrace statement ifCloseBrace {ifStatementEnd();}
-                                |   ELSE {ifStatementElse();} ifOpenBrace statement ifCloseBrace {}
+                                |   ELSE {ifStatementElseBegin();} elseOpenBrace statement elseCloseBrace {ifStatementElseEnd();}
                                 ;
 
 condition                       :   '(' condition ')' {;}
@@ -214,6 +215,12 @@ ifOpenBrace                     :   '{' {bracketCounter++; printf("open parenthe
                                 ;
 
 ifCloseBrace                    :   '}' {bracketCounter--; printf("closed parenthesis of if condition and bracketCount = %d\n", bracketCounter);}
+                                ;
+
+elseOpenBrace                   :   '{' {bracketCounter++; printf("open parenthesis of else and bracketCount = %d\n", bracketCounter);}
+                                ;
+
+elseCloseBrace                  :   '}' {bracketCounter--; printf("closed parenthesis of else and bracketCount = %d\n", bracketCounter);}
                                 ;
 
 whileLoopStatement              :   WHILE {loopInitial();}'(' condition ')' whileOpenBrace statement whileCloseBrace {loopEnd();}
