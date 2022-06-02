@@ -5,7 +5,6 @@
     int yylex(void);
     int yyerror(const char* s);
     int main(void);
-
 %}
 
 //Tokens Definition
@@ -247,7 +246,7 @@ forLoopOpenBrace                :   '{' {bracketCounter++; printf("open parenthe
 forLoopCloseBrace               :   '}' {bracketCounter--; printf("closed parenthesis of for loop\n");}
                                 ;
 
-doWhileStatement                :   DO '{'{bracketCounter++;} statement '}'{bracketCounter--;} WHILE {loopInitial();} '(' condition ')' {loopEnd();}
+doWhileStatement                :   DO '{' {bracketCounter++;} statement '}' {bracketCounter--;} WHILE {loopInitial();} '(' condition ')' {loopEnd();}
                                 ;
 
 switchStatement                 :   SWITCH '(' switchStatementVariable ')' switchStatementBody {;}

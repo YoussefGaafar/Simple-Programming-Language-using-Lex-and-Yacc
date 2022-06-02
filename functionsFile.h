@@ -4,7 +4,7 @@
 
 int variableCounter = 0; // counts the number of variables
 int bracketCounter = 0;  // counts the number of brackets
-int typeIdentifier = 0;  // 0 = int, 1 = float, 2 = char, 3 = string
+int typeIdentifier = -1;  // 0 = int, 1 = float, 2 = char, 3 = string
 int registerNumber = 0;  // counts the number of registers
 int labelNumber = 0;     // counts the number of labels
 int firstIfLabel = -1;    // Labels the first if statement
@@ -78,8 +78,8 @@ void appendVariable(int id, int type, int intValue, float floatValue, char charV
         variableCounter++;
     }
 
-    else if(checkVariableExistence(id) == 1 && (intValue != -1 || floatValue != -1.0 || charValue != '\0' || stringValue != NULL || boolValue != -1 ) )// Re declaring variable
-    {
+    else if(checkVariableExistence(id) == 1 && (intValue != -1 || floatValue != -1.0 || charValue != '\0' || stringValue != NULL || boolValue != -1 ) )
+    { // Re declaring a variable
         int i;
         for (i = 0; i < variableCounter; i++)
         {
@@ -98,7 +98,7 @@ void appendVariable(int id, int type, int intValue, float floatValue, char charV
     else
     {
         printf("Error: Variable already declared\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -115,7 +115,7 @@ int checkAssignmentCompatibility(int id, int mathElementType)
     if (varType == -1 || mathElementType == -1)
     {
         printf("Variable not declared\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     else if (varType == mathElementType)
@@ -127,11 +127,11 @@ int checkAssignmentCompatibility(int id, int mathElementType)
     else
     {
         printf("Type mismatch\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
-// Function to get variable value
+// Function to get INT variable value
 int getINTVariableValue(int id)
 {
     int i;
@@ -149,6 +149,7 @@ int getINTVariableValue(int id)
     return id;
 }
 
+// Function to get Float variable value
 float getFLOATVariableValue(int id)
 {
     int i;
@@ -167,6 +168,7 @@ float getFLOATVariableValue(int id)
     return (float)id;
 }
 
+// Function to get Char variable value
 char getCHARVariableValue(int id)
 {
     int i;
@@ -181,6 +183,7 @@ char getCHARVariableValue(int id)
     return '\0';
 }
 
+// Function to get String variable value
 char* getSTRINGVariableValue(int id)
 {
     int i;
@@ -195,6 +198,7 @@ char* getSTRINGVariableValue(int id)
     return NULL;
 }
 
+// Function to get Boolean variable value
 int getBOOLVariableValue(int id)
 {
     int i;
@@ -271,7 +275,7 @@ void addINTTwoRegisters(int a, int b)
     if(a == -1 || b == -1)
     {
         printf("Invalid Addition\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     printf("adding %d and %d\n", a, b);
     registerNumber++;
@@ -284,7 +288,7 @@ void addFLOATTwoRegisters(float a, float b)
     if(a == -1.0 || b == -1.0)
     {
         printf("Invalid Addition\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %f\n MOV R%d, %f\n ADD R%d, R%d, R%d\n R%d = %f\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a + b);
@@ -296,7 +300,7 @@ void subINTTwoRegisters(int a, int b)
     if(a == -1 || b == -1)
     {
         printf("Invalid Subtraction\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %d\n MOV R%d, %d\n SUB R%d, R%d, R%d\n R%d = %d\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a - b);
@@ -308,7 +312,7 @@ void subFLOATTwoRegisters(float a, float b)
     if(a == -1.0 || b == -1.0)
     {
         printf("Invalid Subtraction\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %f\n MOV R%d, %f\n SUB R%d, R%d, R%d\n R%d = %f\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a - b);
@@ -320,7 +324,7 @@ void mulINTTwoRegisters(int a, int b)
     if(a == -1 || b == -1)
     {
         printf("Invalid Multiplication\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %d\n MOV R%d, %d\n MUL R%d, R%d, R%d\n R%d = %d\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a * b);
@@ -332,7 +336,7 @@ void mulFLOATTwoRegisters(float a, float b)
     if(a == -1.0 || b == -1.0)
     {
         printf("Invalid Multiplication\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %f\n MOV R%d, %f\n MUL R%d, R%d, R%d\n R%d = %f\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a * b);
@@ -344,7 +348,7 @@ void divINTTwoRegisters(int a, int b)
     if(a == -1 || b == -1)
     {
         printf("Invalid Division\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %d\n MOV R%d, %d\n DIV R%d, R%d, R%d\n R%d = %d\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a / b);
@@ -356,7 +360,7 @@ void divFLOATTwoRegisters(float a, float b)
     if(a == -1.0 || b == -1.0)
     {
         printf("Invalid Division\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     registerNumber++;
     printf("MOV R%d, %f\n MOV R%d, %f\n DIV R%d, R%d, R%d\n R%d = %f\n\n", 10, a, 11, b, registerNumber, 10, 11, registerNumber, a / b);
@@ -395,7 +399,7 @@ void ifStatementElseBegin()
     if (firstIfLabel == -1)
     {
         printf("No if condition exists\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     else
@@ -425,7 +429,7 @@ void loopEnd()
     labelNumber++;
 }
 
-//Function that checks for the condition
+//Function that checks for the conditions
 void checkCondition(char* symbol, int firstComparater, int secondComparater)
 {
     if(symbol == ">=")
@@ -463,6 +467,6 @@ void checkCondition(char* symbol, int firstComparater, int secondComparater)
         printf("CMP T,Value1: %d,Value2: %d\n", firstComparater, secondComparater);      
         printf("JNE T,end \n");
     }
-
-    
 }
+
+
