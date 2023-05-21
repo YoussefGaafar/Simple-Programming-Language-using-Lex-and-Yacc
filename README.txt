@@ -1,6 +1,6 @@
 Contributors (Github Username):
-yousfadel
-MohamedWZS
+@YousefGaafer
+@MohamedWZS
 
 Steps to run at Terminal:
 1. make all 
